@@ -4,8 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dependencies"
-        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
-        xmlns:dockablz="clr-namespace:Dragablz.Dockablz;assembly=Dragablz"
         xmlns:properties="clr-namespace:Dependencies.Properties"
         mc:Ignorable="d"
         
@@ -41,25 +39,24 @@
             <!-- Hide/Show the status bar based on a global switch -->
             <local:BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
 
-            <!-- CustomHeader with middle click to close tab -->
-            <DataTemplate DataType="{x:Type local:CustomHeaderViewModel }">
-                <local:DragablzCustomHeader />
-            </DataTemplate>
+            <!-- Removed CustomHeader with middle click to close tab DataTemplate -->
 
-            <dragablz:InterTabController  x:Key="DependenciesInterTabController" x:Shared="False"  Partition="2AE89D18-F236-4D20-9605-6C03319038E6"/>
-
-            <Style TargetType="{x:Type dragablz:TabablzControl}" x:Key="DependenciesTabControlStyle">
-                <Setter Property="ShowDefaultCloseButton" Value="True" />
-                <Setter Property="ItemContainerStyle" Value="{StaticResource TrapezoidDragableTabItemStyle}" />
-                <Setter Property="HeaderMemberPath" Value="Header" />
-                <Setter Property="HeaderMemberPath" Value="Header" />
-                <Setter Property="InterTabController" Value="{StaticResource InterTabController}" />
-                <Setter Property="Margin" Value="0 0 0 0" />
-                <Setter Property="AdjacentHeaderItemOffset" Value="-10" />
-                <Setter Property="FixedHeaderCount" Value="0" />
-                <Setter Property="Background" Value="#FF5C8F88"/>
-            </Style>
-        </ResourceDictionary>
+            <Style TargetType="{x:Type TabItem}">
+                <Setter Property="HeaderTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                                <Button Grid.Column="1" Content="X" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TabControl}}, Path=DataContext.CloseTabCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}}}" Margin="5,0,0,0" Width="16" Height="16" />
+                            </Grid>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>        </ResourceDictionary>
 
     </Window.Resources>
 
@@ -141,51 +138,9 @@
         </Grid>
                
         
-        <!-- dockablz:Layout is part of the main grid =>  Grid.Row="1" -->
-        <!-- DependencyWindow does not support being a floating window => IsFloatDropZoneEnabled="False" -->
-        <!-- all dragablz controls need to reference  Partition="2AE89D18-F236-4D20-9605-6C03319038E6" in order to dock correctly -->
-        <dockablz:Layout Partition="2AE89D18-F236-4D20-9605-6C03319038E6" Name="DependencyRootLayout"
-                    IsFloatDropZoneEnabled="False"
-                    FloatingItemHeaderMemberPath="Header"
-                    Grid.Row="1" d:IsHidden="True">
-
-            <!-- branch template lets dragablz create a new tab control after a window is split via docking -->
-            <dockablz:Layout.BranchTemplate>
-                <DataTemplate>
-                    <dragablz:TabablzControl Style="{StaticResource DependenciesTabControlStyle}" InterTabController="{StaticResource DependenciesInterTabController}">
-                    </dragablz:TabablzControl>
-                </DataTemplate>
-            </dockablz:Layout.BranchTemplate>
-            
-            <!-- a root, named tab control is needed, so when a tab is torn and a new window is created, the new target tab control can be identified -->
-            <dragablz:TabablzControl x:Name="TabControl"
-                                 Style="{StaticResource DependenciesTabControlStyle}"
-                                 InterTabController="{StaticResource DependenciesInterTabController}">
-        
-                
-                <!--<dragablz:TabablzControl.HeaderSuffixContent>
-                    <Grid x:Name="CustomHeaderContainerGrid" 
-                          Margin="0,2,2,0">
-                        <Grid.Resources>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource StandardEmbeddedButtonStyle}"></Style>
-                        </Grid.Resources>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        --><!-- a root, named tab control is needed, so when a tab is torn and a new window is created, the new target tab control can be identified --><!--
-                        <Button Style="{StaticResource AddItemCommandButtonStyle}"
-                                    x:Name="AddButton"
-                                    Grid.Column="0"
-                                    Command="Open"
-                                    />
-                    </Grid>
-                </dragablz:TabablzControl.HeaderSuffixContent>-->            
-           </dragablz:TabablzControl>
-
-
-        </dockablz:Layout>
+        <TabControl x:Name="TabControl" Grid.Row="1" d:IsHidden="True" Background="#FF5C8F88">
+            <!-- Further customization for TabControl items and templates would go here -->
+        </TabControl>
 
         <StatusBar x:Name="AppStatusBar" 
                    HorizontalContentAlignment="Stretch" 

@@ -139,7 +139,6 @@
     <Compile Include="DependencyModuleList.xaml.cs">
       <DependentUpon>DependencyModuleList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DragablzCustomHeader.cs" />
     <Compile Include="FilterControl\FilterControl.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Helpers\SettingBindingHandler.cs" />
@@ -180,10 +179,6 @@
     <Page Include="DependencyWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DragablzCustomHeader.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="FilterControl\FilterControl.generic.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -254,10 +249,6 @@
     <ProjectReference Include="..\DependenciesLib\DependenciesLib.csproj">
       <Project>{4a459493-14fc-4c87-9254-60e0959535da}</Project>
       <Name>DependenciesLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\third_party\Dragablz\Dragablz\Dragablz.net45.csproj">
-      <Project>{7b11011c-7fd7-4ab0-a1ad-04e940b026de}</Project>
-      <Name>Dragablz.net45</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

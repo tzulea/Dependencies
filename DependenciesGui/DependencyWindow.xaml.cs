@@ -508,10 +508,10 @@ namespace Dependencies
 
 
     /// <summary>
-    /// Dependemcy tree analysis window for a given PE.
+    /// DependencyWindow : represents a PE file analysis in a tab.
+    /// It is a UserControl that can be hosted as content within a native TabItem.
     /// </summary>
-    public partial class DependencyWindow :  TabItem 
-    { 
+    public partial class DependencyWindow : UserControl    { 
 
         PE Pe;
 		public string RootFolder;

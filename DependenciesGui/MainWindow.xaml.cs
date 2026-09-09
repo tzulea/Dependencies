@@ -5,39 +5,13 @@ using System.Windows.Input;
 using System.Windows.Forms;
 using System.Windows.Data;
 
-using Dragablz;
-using System.Windows.Shell;
-using System.Globalization;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Controls; // Added for TabItem, TabControl, SelectionChangedEventArgs
 
 namespace Dependencies
 {
-    /// <summary>
-    /// We override the default Dragablz.IInterTabClient  in order to change
-    /// it's behaviour on closing all tabs.
-    /// </summary>
-    public class DependenciesInterTabClient : DefaultInterTabClient
-    {
-        /// <summary>
-        /// When closing all tabs on a particular MainWindow instances, we want
-        /// to know if it's okay to close the application also. the MainWindow created
-        /// by the "App" entry point is marked as "master" and is not closed,
-        /// whereas all the others are.
-        /// </summary>
-        public override TabEmptiedResponse TabEmptiedHandler(TabablzControl tabControl, Window window)
-        {
-            MainWindow main = window as MainWindow;
-            if (main.IsMaster)
-            {
-                //main.DefaultMessage.Visibility = Visibility.Visible;
-                return TabEmptiedResponse.DoNothing;
-            }
-                
-
-            return TabEmptiedResponse.CloseWindowOrLayoutBranch;
-        }
-    }
+    // Removed Dragablz.IInterTabClient and DependenciesInterTabClient class
 
     public class RecentMenuItem : INotifyPropertyChanged
     {
@@ -88,14 +62,15 @@ namespace Dependencies
 
         public ObservableCollection<RecentMenuItem> _recentsItems;
 
-        private readonly IInterTabClient _interTabClient = new DependenciesInterTabClient();
+        // Removed _interTabClient field
 
         private About AboutPage;
         private UserSettings UserSettings;
 		private SearchFolder SearchFolder;
 
         private bool _Master;
-		private bool _EnableSearchFolderCustomization;
+
+        public ICommand CloseTabCommand { get; private set; }
 
 
         #region PublicAPI
@@ -111,12 +86,17 @@ namespace Dependencies
             this.UserSettings = new UserSettings();
 			this.SearchFolder = null;
 
-			// TODO : understand how to reliably bind in xaml
-			this.TabControl.InterTabController.InterTabClient = DoNothingInterTabClient;
-            this.TabControl.IsEmptyChanged += MainWindow_TabControlIsEmptyHandler;
+            // Removed Dragablz-specific initialization
+            // this.TabControl.InterTabController.InterTabClient = DoNothingInterTabClient;
+            // this.TabControl.IsEmptyChanged += MainWindow_TabControlIsEmptyHandler;
 
             this._Master = false;
 			this.DataContext = this;
+
+            CloseTabCommand = new RelayCommand(CloseTab);
+            this.TabControl.SelectionChanged += TabControl_SelectionChanged;
+
+            UpdateTabControlState();
         }
 
         public ObservableCollection<RecentMenuItem> RecentsItems
@@ -134,25 +114,23 @@ namespace Dependencies
         public void OpenNewDependencyWindow(String Filename)
         {
             var newDependencyWindow = new DependencyWindow(Filename);
-            newDependencyWindow.Header = new CustomHeaderViewModel { Header = Path.GetFileNameWithoutExtension(Filename) };
+            // Removed Dragablz-specific header assignment
+            // newDependencyWindow.Header = new CustomHeaderViewModel { Header = Path.GetFileNameWithoutExtension(Filename) };
 
-            this.TabControl.AddToSource(newDependencyWindow);
-            this.TabControl.SelectedItem = newDependencyWindow;
+            TabItem newTabItem = new TabItem();
+            newTabItem.Header = Path.GetFileNameWithoutExtension(Filename); // Set header directly
+            newTabItem.Content = newDependencyWindow; // Set content
+
+            this.TabControl.Items.Add(newTabItem); // Add to native TabControl
+            this.TabControl.SelectedItem = newTabItem; // Select the new tab
 
             // Update recent files entries
             App.AddToRecentDocuments(Filename);
             PopulateRecentFilesMenuItems();
+            UpdateTabControlState(); // Update state after adding a tab
         }
 
-        /// <summary>
-        /// We override the default Dragablz.IInterTabClient  in order to change
-        /// it's behaviour on closing all tabs.
-        /// </summary>
-        public IInterTabClient DoNothingInterTabClient
-        {
-            get { return _interTabClient; }
-        }
-
+        // Removed DoNothingInterTabClient property
 		
 		public bool EnableSearchFolderCustomization
 		{
@@ -294,7 +272,7 @@ namespace Dependencies
 
 		private void OpenCustomizeSearchFolderCommand_Executed(object sender, RoutedEventArgs e)
 		{
-			DependencyWindow SelectedItem = this.TabControl.SelectedItem as DependencyWindow;
+			DependencyWindow SelectedItem = (this.TabControl.SelectedItem as TabItem)?.Content as DependencyWindow;
 			if (SelectedItem == null)
 				return;
 
@@ -310,7 +288,7 @@ namespace Dependencies
 
 		private void RefreshCommandBinding_Executed(object sender, RoutedEventArgs e)
         {
-			DependencyWindow SelectedItem = this.TabControl.SelectedItem as DependencyWindow;
+			DependencyWindow SelectedItem = (this.TabControl.SelectedItem as TabItem)?.Content as DependencyWindow;
 			if (SelectedItem == null)
 				return;
 
@@ -354,11 +332,29 @@ namespace Dependencies
             }
         }
 
-        private void MainWindow_TabControlIsEmptyHandler(object sender, RoutedPropertyChangedEventArgs<bool> e)
+        // Removed MainWindow_TabControlIsEmptyHandler
+
+        private void UpdateTabControlState()
         {
-            this.DefaultMessage.Visibility = (e.NewValue) ? Visibility.Visible : Visibility.Hidden;
-            this._RefreshItem.IsEnabled = !e.NewValue;
+            bool hasItems = TabControl.Items.Count > 0;
+            DefaultMessage.Visibility = hasItems ? Visibility.Hidden : Visibility.Visible;
+            _RefreshItem.IsEnabled = hasItems;
         }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateTabControlState();
+        }
+
+        private void CloseTab(object parameter)
+        {
+            if (parameter is TabItem tabItemToRemove)
+            {
+                TabControl.Items.Remove(tabItemToRemove);
+                UpdateTabControlState();
+            }
+        }
+
         #endregion EventsHandler
     }
 
