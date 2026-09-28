@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
@@ -52,25 +53,22 @@ namespace Dependencies
         {
             try
             {
-                var req = (HttpWebRequest)HttpWebRequest.Create(url);
-                req.Method = "HEAD";
-                req.AllowAutoRedirect = false;
-                using (var resp = (HttpWebResponse)await req.GetResponseAsync())
+                using var handler = new HttpClientHandler { AllowAutoRedirect = false };
+                using var client = new HttpClient(handler);
+                using var request = new HttpRequestMessage(HttpMethod.Head, url);
+                using var response = await client.SendAsync(request);
+
+                switch (response.StatusCode)
                 {
-                    switch (resp.StatusCode)
-                    {
-                        case HttpStatusCode.OK:
-                            return url;
-                        case HttpStatusCode.Redirect:
-                        case HttpStatusCode.MovedPermanently:
-                        case HttpStatusCode.RedirectKeepVerb:
-                        case HttpStatusCode.RedirectMethod:
-                            if (resp.Headers["Location"] == null)
-                                return url;
-                            return resp.Headers["Location"];
-                        default:
-                            return url;
-                    }
+                    case HttpStatusCode.OK:
+                        return url;
+                    case HttpStatusCode.Redirect:
+                    case HttpStatusCode.MovedPermanently:
+                    case HttpStatusCode.RedirectKeepVerb:
+                    case HttpStatusCode.RedirectMethod:
+                        return response.Headers.Location?.ToString() ?? url;
+                    default:
+                        return url;
                 }
             }
             catch
