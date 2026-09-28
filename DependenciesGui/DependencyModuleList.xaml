@@ -64,6 +64,12 @@
 
     </local:DependencyCustomListView.Resources>
 
+    <local:DependencyCustomListView.ItemContainerStyle>
+        <Style TargetType="ListViewItem" BasedOn="{StaticResource DependencyCustomListViewItem}">
+            <Setter Property="ToolTip" Value="{Binding Status}" />
+        </Style>
+    </local:DependencyCustomListView.ItemContainerStyle>
+
     <local:DependencyCustomListView.View>
 
         <GridView AllowsColumnReorder="true">

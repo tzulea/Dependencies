@@ -2,7 +2,6 @@
 
 This repository is a fork of the [original Dependencies project](https://github.com/lucasg/Dependencies), updated to use a newer toolset, including Visual Studio 2022 and .NET 8.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/wtr5v8ksndbkkqxg?svg=true)](https://ci.appveyor.com/project/lucasg/dependencies)
 [![GitHub Actions build](https://github.com/tzulea/Dependencies/actions/workflows/build.yml/badge.svg)](https://github.com/tzulea/Dependencies/actions/workflows/build.yml)
 
 NB : due to [limitations on /clr compilation](https://msdn.microsoft.com/en-us/library/ffkc918h.aspx), `Dependencies` needs [Visual C++  Redistributable](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) installed to run properly.

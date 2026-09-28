@@ -19,7 +19,6 @@
          <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="FontFamily" Value="{Binding Source={x:Static properties:Settings.Default}, Path=Font, Mode=OneWay}" />
         <Setter Property="ContextMenu" Value="{DynamicResource ResourceKey=ItemContextMenu}" />
-        <Setter Property="ToolTip" Value="{Binding Status }" />
     </Style>
 
     <Style x:Key="DependencyCustomListViewStyle" TargetType="{x:Type local:DependencyCustomListView}">
