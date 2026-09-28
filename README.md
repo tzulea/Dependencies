@@ -1,9 +1,9 @@
 # Dependencies - An open-source modern Dependency Walker
+
+This repository is a fork of the [original Dependencies project](https://github.com/lucasg/Dependencies), updated to use a newer toolset, including Visual Studio 2022 and .NET 8.
+
 [![Build status](https://ci.appveyor.com/api/projects/status/wtr5v8ksndbkkqxg?svg=true)](https://ci.appveyor.com/project/lucasg/dependencies)
-
-### [Download here](https://github.com/lucasg/Dependencies/releases/download/v1.11.1/Dependencies_x64_Release.zip)
-
-#### [(If you're running an AV, use this download instead)](https://github.com/lucasg/Dependencies/releases/download/v1.11.1/Dependencies_x64_Release_.without.peview.exe.zip)
+[![GitHub Actions build](https://github.com/tzulea/Dependencies/actions/workflows/build.yml/badge.svg)](https://github.com/tzulea/Dependencies/actions/workflows/build.yml)
 
 NB : due to [limitations on /clr compilation](https://msdn.microsoft.com/en-us/library/ffkc918h.aspx), `Dependencies` needs [Visual C++  Redistributable](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) installed to run properly.
 
@@ -78,8 +78,7 @@ At the moment, `Dependencies` recreates features and "features" of `depends.exe`
 
 ## Building
 
-Building is pretty straightforward.
-The only caveat is you need to select the "Debug" or "Release" configuration and "x64" or "x86" platform which may not be the default.
+Build with Visual Studio 2022 and the .NET 8 SDK, with the Desktop development with C++ workload installed for the C++/CLI bridge and native libraries. Select the "Debug" or "Release" configuration and the "x64" platform.
 
 
 ## Credits and licensing
