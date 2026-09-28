@@ -40,8 +40,8 @@ namespace Dependencies
                 if (is_verbose)
                 {
                     // Redirect debug log to the console
-                    Debug.Listeners.Add(new TextWriterTraceListener(Console.Out));
-                    Debug.AutoFlush = true;
+                    Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
+                    Trace.AutoFlush = true;
                 }
 
                 // always the first call to make

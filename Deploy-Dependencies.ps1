@@ -30,10 +30,7 @@ function Get-PeviewBinary {
   Invoke-WebRequest -Uri "$apiUrl/buildjobs/$jobId/artifacts/$artifactFileName" -OutFile "./$artifactFileName"
 
   # get the platform subfolder within the artifact zip file
-  $pePlatform = "32bit"
-  if ($env:platform -eq "x64") {
-    $pePlatform = "64bit"
-  }
+  $pePlatform = "64bit"
 
   # check the expected hash before extracing binaries
   $PhArchiveHash = (Get-FileHash -Algorithm SHA256 -Path "./$artifactFileName").Hash;
@@ -53,19 +50,7 @@ function Copy-SystemDll {
     [String] $OutputFolder
   )
 
-  $SystemFolder = [System.Environment]::GetFolderPath('SystemX86');
-  if ($env:platform -eq "x64")
-  {
-    # Check if it's a 32-bit powershell application, in order to force accessing System32
-    if (Test-path "$([System.Environment]::GetFolderPath('Windows'))\sysnative")
-    {
-      $SystemFolder = "$([System.Environment]::GetFolderPath('Windows'))\sysnative";
-    }
-    else
-    {
-      $SystemFolder = [System.Environment]::GetFolderPath('System');
-    }
-  }
+  $SystemFolder = [System.Environment]::GetFolderPath('System');
 
   $DllPath="$($SystemFolder)\$($DllName)";
   if (Test-Path $DllPath) {
@@ -81,7 +66,7 @@ function Copy-UniversalCrt {
   )
 
   # reference : https://github.com/mozilla/gecko-dev/blob/50b3fb522bdb080a7c9c00b1fdc758d171586cb6/media/webrtc/trunk/webrtc/build/vs_toolchain.py#L203
-  $UcrtFolder = "C:\Program Files (x86)\Windows Kits\10\Redist\ucrt\DLLs\$($env:platform)";
+  $UcrtFolder = "C:\Program Files (x86)\Windows Kits\10\Redist\ucrt\DLLs\x64";
   
   foreach ($ucrtdll in gci $UcrtFolder -File) {
     Write-Host "Copy ucrt dll $($ucrtdll.FullName)";

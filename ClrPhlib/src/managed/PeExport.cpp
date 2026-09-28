@@ -47,8 +47,8 @@ PeExport::PeExport(
 {
 	this->Ordinal = Ordinal;
 	this->ExportByOrdinal = ExportByOrdinal;
-	this->Name = String::Copy(other->Name);
-	this->ForwardedName = String::Copy(other->ForwardedName);
+	this->Name = other->Name;
+	this->ForwardedName = other->ForwardedName;
 	this->VirtualAddress = other->VirtualAddress;
 }
 
