@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClrPhlib\ClrPhlib.vcxproj" />
+    <ProjectReference Include="..\Dependencies.Interop\Dependencies.Interop.csproj" />
     <ProjectReference Include="..\DependenciesLib\DependenciesLib.csproj" />
   </ItemGroup>
 

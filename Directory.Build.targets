@@ -1,0 +1,5 @@
+<Project>
+  <Target Name="CopyDependenciesNativeToOutput" AfterTargets="Build" Condition="'$(TargetFramework)' == 'net8.0-windows'">
+    <Copy SourceFiles="$(SolutionDir)bin\$(Configuration)x64\DependenciesNative.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+</Project>
